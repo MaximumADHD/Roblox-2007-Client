@@ -12,13 +12,13 @@ You have been warned, be smart and have fun :)!
 # Helpful Commands #
 
 * Open uncopylocked places from the website: 
-    Markup :  `game:Load("http://www.roblox.com/asset/?ID=PLACEID`
+`game:Load("http://www.roblox.com/asset/?ID=PLACEID`
 	
-* Reset current place session (unstable)
-    Markup :  `game:ClearContent(true)`
+* Reset current place session (unstable)  
+`game:ClearContent(true)`
 
 * Create a player:
-    Markup :  `game.Players:CreateLocalPlayer(0)`
+`game.Players:CreateLocalPlayer(0)`  
 
 * Load your player's character:
-    Markup :  `game.Players.LocalPlayer:LoadCharacter()`
+`game.Players.LocalPlayer:LoadCharacter()`  
