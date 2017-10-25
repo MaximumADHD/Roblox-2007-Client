@@ -9,6 +9,9 @@ This build in it's vanilla state is ***extremely vulnerable*** to exploits.
 We cannot guarentee your safety connecting to servers running this build, nor will we take any responsibility if anything happpens.
 You have been warned, be smart and have fun :)!
 
+# Download Link #
+https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/master.zip
+
 # Helpful Commands #
 
 * Open uncopylocked places from the website:  
