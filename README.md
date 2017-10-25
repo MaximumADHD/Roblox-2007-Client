@@ -10,7 +10,7 @@ We cannot guarentee your safety connecting to servers running this build, nor wi
 You have been warned, be smart and have fun :)!
 
 # Download Link #
-https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/master.zip
+* https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/master.zip
 
 # Helpful Commands #
 
