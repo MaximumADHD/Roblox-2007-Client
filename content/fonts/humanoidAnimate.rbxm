@@ -6,327 +6,7 @@
 			<bool name="Disabled">false</bool>
 			<Content name="LinkedSource"><null></null></Content>
 			<string name="Name">Animate</string>
-			<string name="Source">-- Now with exciting TeamColors HACK!
-
-function waitForChild(parent, childName)
-	while true do
-		local child = parent:findFirstChild(childName)
-		if child then
-			return child
-		end
-		parent.ChildAdded:wait()
-	end
-end
-
-
------------------------------ TEAM COLORS
-
-
-function onTeamChanged(player)
-
-	wait(1)
-
-	local char = player.Character
-	if char == nil then return end
-
-	if (player.Neutral == true) then 
-		-- Replacing the current BodyColor object will force a reset
-		local old = char:findFirstChild(&quot;Body Colors&quot;)
-		if (old == nil) then return end
-		old:clone().Parent = char
-		old.Parent = nil
-	else
-		local head = char:findFirstChild(&quot;Head&quot;)
-		local torso = char:findFirstChild(&quot;Torso&quot;) 
-		local left_arm = char:findFirstChild(&quot;Left Arm&quot;) 
-		local right_arm = char:findFirstChild(&quot;Right Arm&quot;) 
-		local left_leg = char:findFirstChild(&quot;Left Leg&quot;) 
-		local right_leg = char:findFirstChild(&quot;Right Leg&quot;) 
-
-		if head ~= nil then head.BrickColor = BrickColor.new(24) end
-		if torso ~= nil then torso.BrickColor = player.TeamColor end
-		if left_arm ~= nil then left_arm.BrickColor = BrickColor.new(26) end
-		if right_arm ~= nil then right_arm.BrickColor = BrickColor.new(26) end
-		if left_leg ~= nil then left_leg.BrickColor = BrickColor.new(26) end
-		if right_leg ~= nil then right_leg.BrickColor = BrickColor.new(26) end
-	end
-
-	
-
-end
-
-function onPlayerPropChanged(property, player)
-	if property == &quot;Character&quot; then
-		onTeamChanged(player)
-	end
-	if property== &quot;TeamColor&quot; or property == &quot;Neutral&quot; then
-		onTeamChanged(player)
-	end
-end
-
-
-local cPlayer = game.Players:GetPlayerFromCharacter(script.Parent)
-cPlayer.Changed:connect(function(property) onPlayerPropChanged(property, cPlayer) end )
-onTeamChanged(cPlayer)
-
-
------------------------------ ANIMATION
-
--- declarations
-
-local Figure = script.Parent
-local Torso = waitForChild(Figure, &quot;Torso&quot;)
-local RightShoulder = waitForChild(Torso, &quot;Right Shoulder&quot;)
-local LeftShoulder = waitForChild(Torso, &quot;Left Shoulder&quot;)
-local RightHip = waitForChild(Torso, &quot;Right Hip&quot;)
-local LeftHip = waitForChild(Torso, &quot;Left Hip&quot;)
-local Neck = waitForChild(Torso, &quot;Neck&quot;)
-local Humanoid = waitForChild(Figure, &quot;Humanoid&quot;)
-local pose = &quot;Standing&quot;
-
-local toolAnim = &quot;None&quot;
-local toolAnimTime = 0
-
-local isSeated = false
-
--- functions
-
-function onRunning(speed)
-	if isSeated then return end
-
-	if speed&gt;0 then
-		pose = &quot;Running&quot;
-	else
-		pose = &quot;Standing&quot;
-	end
-end
-
-function onDied()
-	pose = &quot;Dead&quot;
-end
-
-function onJumping()
-	isSeated = false
-	pose = &quot;Jumping&quot;
-end
-
-function onClimbing()
-	pose = &quot;Climbing&quot;
-end
-
-function onGettingUp()
-	pose = &quot;GettingUp&quot;
-end
-
-function onFreeFall()
-	pose = &quot;FreeFall&quot;
-end
-
-function onFallingDown()
-	pose = &quot;FallingDown&quot;
-end
-
-function onSeated()
-	isSeated = true
-	pose = &quot;Seated&quot;
-	print(&quot;Seated&quot;)
-end
-
-
-
-function moveJump()
-	RightShoulder.MaxVelocity = 0.5
-	LeftShoulder.MaxVelocity = 0.5
-	RightShoulder.DesiredAngle = 3.14
-	LeftShoulder.DesiredAngle = -3.14
-	RightHip.DesiredAngle = 0
-	LeftHip.DesiredAngle = 0
-end
-
-function moveFreeFall()
-	RightShoulder.MaxVelocity = 0.5
-	LeftShoulder.MaxVelocity = 0.5
-	RightShoulder.DesiredAngle = 1
-	LeftShoulder.DesiredAngle = -1
-	RightHip.DesiredAngle = 0
-	LeftHip.DesiredAngle = 0
-end
-
-
-function moveClimb()
-	RightShoulder.MaxVelocity = 0.5
-	LeftShoulder.MaxVelocity = 0.5
-	RightShoulder.DesiredAngle = -3.14
-	LeftShoulder.DesiredAngle = 3.14
-	RightHip.DesiredAngle = 0
-	LeftHip.DesiredAngle = 0
-end
-
-function moveSit()
-	print(&quot;Move Sit&quot;)
-	RightShoulder.MaxVelocity = 0.15
-	LeftShoulder.MaxVelocity = 0.15
-	RightShoulder.DesiredAngle = 3.14 /2
-	LeftShoulder.DesiredAngle = -3.14 /2
-	RightHip.DesiredAngle = 3.14 /2
-	LeftHip.DesiredAngle = -3.14 /2
-end
-
-function getTool()
-	
-	kidTable = Figure:children()
-	if (kidTable ~= nil) then
-		numKids = #kidTable
-		for i=1,numKids do
-			if (kidTable[i].className == &quot;Tool&quot;) then return kidTable[i] end
-		end
-	end
-	
-	return nil
-end
-
-function getToolAnim(tool)
-
-	c = tool:children()
-	for i=1,#c do
-		if (c[i].Name == &quot;toolanim&quot; and c[i].className == &quot;StringValue&quot;) then
-			return c[i]
-		end
-	end
-	return nil
-end
-
-function animateTool()
-	
-	if (toolAnim == &quot;None&quot;) then
-		RightShoulder.DesiredAngle = 1.57
-		return
-	end
-
-	if (toolAnim == &quot;Slash&quot;) then
-		RightShoulder.MaxVelocity = 0.5
-		RightShoulder.DesiredAngle = 0
-		return
-	end
-
-	if (toolAnim == &quot;Lunge&quot;) then
-		RightShoulder.MaxVelocity = 0.5
-		LeftShoulder.MaxVelocity = 0.5
-		RightHip.MaxVelocity = 0.5
-		LeftHip.MaxVelocity = 0.5
-		RightShoulder.DesiredAngle = 1.57
-		LeftShoulder.DesiredAngle = 1.0
-		RightHip.DesiredAngle = 1.57
-		LeftHip.DesiredAngle = 1.0
-		return
-	end
-end
-
-function move(time)
-	local amplitude
-	local frequency
-
-	if (pose == &quot;Jumping&quot;) then
-		moveJump()
-		return
-	end
-
-	if (pose == &quot;FreeFall&quot;) then
-		moveFreeFall()
-		return
-	end
-
-	--if (pose == &quot;Climbing&quot;) then
-	--	moveClimb(time)
-	--	return
-	--end
-
-	if (pose == &quot;Seated&quot;) then
-		moveSit()
-		return
-	end
-
-
-	local climbFudge = 0
-	
-	if (pose == &quot;Running&quot;) then
-		RightShoulder.MaxVelocity = 0.15
-		LeftShoulder.MaxVelocity = 0.15
-		amplitude = 1
-		frequency = 9
-	elseif (pose == &quot;Climbing&quot;) then		
-		RightShoulder.MaxVelocity = 0.5
-
-		LeftShoulder.MaxVelocity = 0.5
-
-		amplitude = 1
-		frequency = 9
-		climbFudge = 3.14
-	else
-		amplitude = 0.1
-		frequency = 1
-	end
-
-	desiredAngle = amplitude * math.sin(time*frequency)
-
-	RightShoulder.DesiredAngle = desiredAngle + climbFudge
-	LeftShoulder.DesiredAngle = desiredAngle - climbFudge
-	RightHip.DesiredAngle = -desiredAngle
-	LeftHip.DesiredAngle = -desiredAngle
-
-
-	local tool = getTool()
-
-	if tool ~= nil then
-	
-		animStringValueObject = getToolAnim(tool)
-
-		if animStringValueObject ~= nil then
-			toolAnim = animStringValueObject.Value
-			-- message recieved, delete StringValue
-			animStringValueObject.Parent = nil
-			toolAnimTime = time + .3
-		end
-
-		if time &gt; toolAnimTime then
-			toolAnimTime = 0
-			toolAnim = &quot;None&quot;
-		end
-
-		animateTool()
-
-		
-	else
-		toolAnim = &quot;None&quot;
-		toolAnimTime = 0
-	end
-end
-
-
--- connect events
-
-Humanoid.Died:connect(onDied)
-Humanoid.Running:connect(onRunning)
-Humanoid.Jumping:connect(onJumping)
-Humanoid.Climbing:connect(onClimbing)
-Humanoid.GettingUp:connect(onGettingUp)
-Humanoid.FreeFalling:connect(onFreeFall)
-Humanoid.FallingDown:connect(onFallingDown)
-Humanoid.Seated:connect(onSeated)
-
--- main program
-
-local nextTime = 0
-local runService = game:service(&quot;RunService&quot;);
-
-while Figure.Parent~=nil do
-	time = runService.Stepped:wait()
-	if time &gt; nextTime then
-		move(time)
-		nextTime = time + 0.1
-	end
-end
-</string>
+			<string name="Source">-- Now with exciting TeamColors HACK!&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function waitForChild(parent, childName)&#13;&#13;&#13;&#10;&#9;while true do&#13;&#13;&#13;&#10;&#9;&#9;local child = parent:findFirstChild(childName)&#13;&#13;&#13;&#10;&#9;&#9;if child then&#13;&#13;&#13;&#10;&#9;&#9;&#9;return child&#13;&#13;&#13;&#10;&#9;&#9;end&#13;&#13;&#13;&#10;&#9;&#9;parent.ChildAdded:wait()&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;----------------------------- TEAM COLORS&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onTeamChanged(player)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;wait(1)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;local char = player.Character&#13;&#13;&#13;&#10;&#9;if char == nil then return end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if (player.Neutral == true) then &#13;&#13;&#13;&#10;&#9;&#9;-- Replacing the current BodyColor object will force a reset&#13;&#13;&#13;&#10;&#9;&#9;local old = char:findFirstChild(&quot;Body Colors&quot;)&#13;&#13;&#13;&#10;&#9;&#9;if (old == nil) then return end&#13;&#13;&#13;&#10;&#9;&#9;old:clone().Parent = char&#13;&#13;&#13;&#10;&#9;&#9;old.Parent = nil&#13;&#13;&#13;&#10;&#9;else&#13;&#13;&#13;&#10;&#9;&#9;local head = char:findFirstChild(&quot;Head&quot;)&#13;&#13;&#13;&#10;&#9;&#9;local torso = char:findFirstChild(&quot;Torso&quot;) &#13;&#13;&#13;&#10;&#9;&#9;local left_arm = char:findFirstChild(&quot;Left Arm&quot;) &#13;&#13;&#13;&#10;&#9;&#9;local right_arm = char:findFirstChild(&quot;Right Arm&quot;) &#13;&#13;&#13;&#10;&#9;&#9;local left_leg = char:findFirstChild(&quot;Left Leg&quot;) &#13;&#13;&#13;&#10;&#9;&#9;local right_leg = char:findFirstChild(&quot;Right Leg&quot;) &#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;&#9;if head ~= nil then head.BrickColor = BrickColor.new(24) end&#13;&#13;&#13;&#10;&#9;&#9;if torso ~= nil then torso.BrickColor = player.TeamColor end&#13;&#13;&#13;&#10;&#9;&#9;if left_arm ~= nil then left_arm.BrickColor = BrickColor.new(26) end&#13;&#13;&#13;&#10;&#9;&#9;if right_arm ~= nil then right_arm.BrickColor = BrickColor.new(26) end&#13;&#13;&#13;&#10;&#9;&#9;if left_leg ~= nil then left_leg.BrickColor = BrickColor.new(26) end&#13;&#13;&#13;&#10;&#9;&#9;if right_leg ~= nil then right_leg.BrickColor = BrickColor.new(26) end&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onPlayerPropChanged(property, player)&#13;&#13;&#13;&#10;&#9;if property == &quot;Character&quot; then&#13;&#13;&#13;&#10;&#9;&#9;onTeamChanged(player)&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#9;if property== &quot;TeamColor&quot; or property == &quot;Neutral&quot; then&#13;&#13;&#13;&#10;&#9;&#9;onTeamChanged(player)&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;local cPlayer = game.Players:GetPlayerFromCharacter(script.Parent)&#13;&#13;&#13;&#10;cPlayer.Changed:connect(function(property) onPlayerPropChanged(property, cPlayer) end )&#13;&#13;&#13;&#10;onTeamChanged(cPlayer)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;----------------------------- ANIMATION&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;-- declarations&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;local Figure = script.Parent&#13;&#13;&#13;&#10;local Torso = waitForChild(Figure, &quot;Torso&quot;)&#13;&#13;&#13;&#10;local RightShoulder = waitForChild(Torso, &quot;Right Shoulder&quot;)&#13;&#13;&#13;&#10;local LeftShoulder = waitForChild(Torso, &quot;Left Shoulder&quot;)&#13;&#13;&#13;&#10;local RightHip = waitForChild(Torso, &quot;Right Hip&quot;)&#13;&#13;&#13;&#10;local LeftHip = waitForChild(Torso, &quot;Left Hip&quot;)&#13;&#13;&#13;&#10;local Neck = waitForChild(Torso, &quot;Neck&quot;)&#13;&#13;&#13;&#10;local Humanoid = waitForChild(Figure, &quot;Humanoid&quot;)&#13;&#13;&#13;&#10;local pose = &quot;Standing&quot;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;local toolAnim = &quot;None&quot;&#13;&#13;&#13;&#10;local toolAnimTime = 0&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;local isSeated = false&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;-- functions&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onRunning(speed)&#13;&#13;&#13;&#10;&#9;if isSeated then return end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if speed&gt;0 then&#13;&#13;&#13;&#10;&#9;&#9;pose = &quot;Running&quot;&#13;&#13;&#13;&#10;&#9;else&#13;&#13;&#13;&#10;&#9;&#9;pose = &quot;Standing&quot;&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onDied()&#13;&#13;&#13;&#10;&#9;pose = &quot;Dead&quot;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onJumping()&#13;&#13;&#13;&#10;&#9;isSeated = false&#13;&#13;&#13;&#10;&#9;pose = &quot;Jumping&quot;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onClimbing()&#13;&#13;&#13;&#10;&#9;pose = &quot;Climbing&quot;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onGettingUp()&#13;&#13;&#13;&#10;&#9;pose = &quot;GettingUp&quot;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onFreeFall()&#13;&#13;&#13;&#10;&#9;pose = &quot;FreeFall&quot;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onFallingDown()&#13;&#13;&#13;&#10;&#9;pose = &quot;FallingDown&quot;&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function onSeated()&#13;&#13;&#13;&#10;&#9;isSeated = true&#13;&#13;&#13;&#10;&#9;pose = &quot;Seated&quot;&#13;&#13;&#13;&#10;&#9;print(&quot;Seated&quot;)&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function moveJump()&#13;&#13;&#13;&#10;&#9;RightShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;LeftShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;RightShoulder.DesiredAngle = 3.14&#13;&#13;&#13;&#10;&#9;LeftShoulder.DesiredAngle = -3.14&#13;&#13;&#13;&#10;&#9;RightHip.DesiredAngle = 0&#13;&#13;&#13;&#10;&#9;LeftHip.DesiredAngle = 0&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function moveFreeFall()&#13;&#13;&#13;&#10;&#9;RightShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;LeftShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;RightShoulder.DesiredAngle = 1&#13;&#13;&#13;&#10;&#9;LeftShoulder.DesiredAngle = -1&#13;&#13;&#13;&#10;&#9;RightHip.DesiredAngle = 0&#13;&#13;&#13;&#10;&#9;LeftHip.DesiredAngle = 0&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function moveClimb()&#13;&#13;&#13;&#10;&#9;RightShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;LeftShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;RightShoulder.DesiredAngle = -3.14&#13;&#13;&#13;&#10;&#9;LeftShoulder.DesiredAngle = 3.14&#13;&#13;&#13;&#10;&#9;RightHip.DesiredAngle = 0&#13;&#13;&#13;&#10;&#9;LeftHip.DesiredAngle = 0&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function moveSit()&#13;&#13;&#13;&#10;&#9;print(&quot;Move Sit&quot;)&#13;&#13;&#13;&#10;&#9;RightShoulder.MaxVelocity = 0.15&#13;&#13;&#13;&#10;&#9;LeftShoulder.MaxVelocity = 0.15&#13;&#13;&#13;&#10;&#9;RightShoulder.DesiredAngle = 3.14 /2&#13;&#13;&#13;&#10;&#9;LeftShoulder.DesiredAngle = -3.14 /2&#13;&#13;&#13;&#10;&#9;RightHip.DesiredAngle = 3.14 /2&#13;&#13;&#13;&#10;&#9;LeftHip.DesiredAngle = -3.14 /2&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function getTool()&#13;&#13;&#13;&#10;&#9;&#13;&#13;&#13;&#10;&#9;kidTable = Figure:children()&#13;&#13;&#13;&#10;&#9;if (kidTable ~= nil) then&#13;&#13;&#13;&#10;&#9;&#9;numKids = #kidTable&#13;&#13;&#13;&#10;&#9;&#9;for i=1,numKids do&#13;&#13;&#13;&#10;&#9;&#9;&#9;if (kidTable[i].className == &quot;Tool&quot;) then return kidTable[i] end&#13;&#13;&#13;&#10;&#9;&#9;end&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#9;&#13;&#13;&#13;&#10;&#9;return nil&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function getToolAnim(tool)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;c = tool:children()&#13;&#13;&#13;&#10;&#9;for i=1,#c do&#13;&#13;&#13;&#10;&#9;&#9;if (c[i].Name == &quot;toolanim&quot; and c[i].className == &quot;StringValue&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;&#9;return c[i]&#13;&#13;&#13;&#10;&#9;&#9;end&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#9;return nil&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function animateTool()&#13;&#13;&#13;&#10;&#9;&#13;&#13;&#13;&#10;&#9;if (toolAnim == &quot;None&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;RightShoulder.DesiredAngle = 1.57&#13;&#13;&#13;&#10;&#9;&#9;return&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if (toolAnim == &quot;Slash&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;RightShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;&#9;RightShoulder.DesiredAngle = 0&#13;&#13;&#13;&#10;&#9;&#9;return&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if (toolAnim == &quot;Lunge&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;RightShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;&#9;LeftShoulder.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;&#9;RightHip.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;&#9;LeftHip.MaxVelocity = 0.5&#13;&#13;&#13;&#10;&#9;&#9;RightShoulder.DesiredAngle = 1.57&#13;&#13;&#13;&#10;&#9;&#9;LeftShoulder.DesiredAngle = 1.0&#13;&#13;&#13;&#10;&#9;&#9;RightHip.DesiredAngle = 1.57&#13;&#13;&#13;&#10;&#9;&#9;LeftHip.DesiredAngle = 1.0&#13;&#13;&#13;&#10;&#9;&#9;return&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;function move(time)&#13;&#13;&#13;&#10;&#9;local amplitude&#13;&#13;&#13;&#10;&#9;local frequency&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if (pose == &quot;Jumping&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;moveJump()&#13;&#13;&#13;&#10;&#9;&#9;return&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if (pose == &quot;FreeFall&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;moveFreeFall()&#13;&#13;&#13;&#10;&#9;&#9;return&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;--if (pose == &quot;Climbing&quot;) then&#13;&#13;&#13;&#10;&#9;--&#9;moveClimb(time)&#13;&#13;&#13;&#10;&#9;--&#9;return&#13;&#13;&#13;&#10;&#9;--end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if (pose == &quot;Seated&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;moveSit()&#13;&#13;&#13;&#10;&#9;&#9;return&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;local climbFudge = 0&#13;&#13;&#13;&#10;&#9;&#13;&#13;&#13;&#10;&#9;if (pose == &quot;Running&quot;) then&#13;&#13;&#13;&#10;&#9;&#9;RightShoulder.MaxVelocity = 0.15&#13;&#13;&#13;&#10;&#9;&#9;LeftShoulder.MaxVelocity = 0.15&#13;&#13;&#13;&#10;&#9;&#9;amplitude = 1&#13;&#13;&#13;&#10;&#9;&#9;frequency = 9&#13;&#13;&#13;&#10;&#9;elseif (pose == &quot;Climbing&quot;) then&#13;&#9;&#9;&#13;&#13;&#10;&#9;&#9;RightShoulder.MaxVelocity = 0.5&#13;&#13;&#10;&#13;&#13;&#10;&#9;&#9;LeftShoulder.MaxVelocity = 0.5&#13;&#13;&#10;&#13;&#13;&#10;&#9;&#9;amplitude = 0&#13;&#13;&#13;&#10;&#9;&#9;frequency = 0&#13;&#13;&#13;&#10;&#9;&#9;climbFudge = -3.14&#13;&#13;&#13;&#10;&#9;else&#13;&#13;&#13;&#10;&#9;&#9;amplitude = 0.1&#13;&#13;&#13;&#10;&#9;&#9;frequency = 1&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;desiredAngle = amplitude * math.sin(time*frequency)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;RightShoulder.DesiredAngle = desiredAngle + climbFudge&#13;&#13;&#13;&#10;&#9;LeftShoulder.DesiredAngle = desiredAngle - climbFudge&#13;&#13;&#13;&#10;&#9;RightHip.DesiredAngle = -desiredAngle&#13;&#13;&#13;&#10;&#9;LeftHip.DesiredAngle = -desiredAngle&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;local tool = getTool()&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;if tool ~= nil then&#13;&#13;&#13;&#10;&#9;&#13;&#13;&#13;&#10;&#9;&#9;animStringValueObject = getToolAnim(tool)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;&#9;if animStringValueObject ~= nil then&#13;&#13;&#13;&#10;&#9;&#9;&#9;toolAnim = animStringValueObject.Value&#13;&#13;&#13;&#10;&#9;&#9;&#9;-- message recieved, delete StringValue&#13;&#13;&#13;&#10;&#9;&#9;&#9;animStringValueObject.Parent = nil&#13;&#13;&#13;&#10;&#9;&#9;&#9;toolAnimTime = time + .3&#13;&#13;&#13;&#10;&#9;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;&#9;if time &gt; toolAnimTime then&#13;&#13;&#13;&#10;&#9;&#9;&#9;toolAnimTime = 0&#13;&#13;&#13;&#10;&#9;&#9;&#9;toolAnim = &quot;None&quot;&#13;&#13;&#13;&#10;&#9;&#9;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;&#9;animateTool()&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#9;&#9;&#13;&#13;&#13;&#10;&#9;else&#13;&#13;&#13;&#10;&#9;&#9;toolAnim = &quot;None&quot;&#13;&#13;&#13;&#10;&#9;&#9;toolAnimTime = 0&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;-- connect events&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;Humanoid.Died:connect(onDied)&#13;&#13;&#13;&#10;Humanoid.Running:connect(onRunning)&#13;&#13;&#13;&#10;Humanoid.Jumping:connect(onJumping)&#13;&#13;&#13;&#10;Humanoid.Climbing:connect(onClimbing)&#13;&#13;&#13;&#10;Humanoid.GettingUp:connect(onGettingUp)&#13;&#13;&#13;&#10;Humanoid.FreeFalling:connect(onFreeFall)&#13;&#13;&#13;&#10;Humanoid.FallingDown:connect(onFallingDown)&#13;&#13;&#13;&#10;Humanoid.Seated:connect(onSeated)&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;-- main program&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;local nextTime = 0&#13;&#13;&#13;&#10;local runService = game:service(&quot;RunService&quot;);&#13;&#13;&#13;&#10;&#13;&#13;&#13;&#10;while Figure.Parent~=nil do&#13;&#13;&#13;&#10;&#9;time = runService.Stepped:wait()&#13;&#13;&#13;&#10;&#9;if time &gt; nextTime then&#13;&#13;&#13;&#10;&#9;&#9;move(time)&#13;&#13;&#13;&#10;&#9;&#9;nextTime = time + 0.1&#13;&#13;&#13;&#10;&#9;end&#13;&#13;&#13;&#10;end&#13;&#13;&#13;&#10;</string>
 			<bool name="archivable">true</bool>
 		</Properties>
 	</Item>
