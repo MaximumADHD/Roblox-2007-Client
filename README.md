@@ -37,4 +37,4 @@ Anyway, the offsets for these effects are listed below. You have to go to that o
 * Bloom: `102951`
 * Depth of Field: `10295E`
 
-![image](https://discourse-cdn-sjc1.com/business/uploads/roblox/original/3X/0/8/08be34da6f6892b59f4e26db208ce7822d82bdc9.jpg)
+![image](https://devforum.roblox.com/uploads/default/original/3X/0/8/08be34da6f6892b59f4e26db208ce7822d82bdc9.jpg)
