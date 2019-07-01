@@ -1,7 +1,6 @@
-# PF94-BLOX CLIENT #
+# PF94blox CLIENT #
 
-This is a newly discovered build of Roblox, compiled in August of 2007.
-To run the client, download this repository as a zip and extract it.
+This is a customized 2007 client of Roblox.
 
 # WARNING: DO NOT USE THIS AS A MULTIPLAYER CLIENT #
 
