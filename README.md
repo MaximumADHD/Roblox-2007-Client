@@ -1,4 +1,4 @@
-# ROBLOX 2007 CLIENT #
+# PF94-BLOX CLIENT #
 
 This is a newly discovered build of Roblox, compiled in August of 2007.
 To run the client, download this repository as a zip and extract it.
@@ -9,8 +9,6 @@ This build in its vanilla state is ***EXTREMELY VULNERABLE*** to exploits.
 We cannot guarentee your safety connecting to servers running this build, nor will we take any responsibility if anything happens.
 You have been warned, be smart and have fun :)!
 
-# Download Link #
-* https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/master.zip
 
 # Helpful Commands #
 
