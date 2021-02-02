@@ -9,8 +9,15 @@ This build in its vanilla state is ***EXTREMELY VULNERABLE*** to exploits.
 We cannot guarentee your safety connecting to servers running this build, nor will we take any responsibility if anything happens.
 You have been warned, be smart and have fun :)!
 
+# Requirements #
+
+For this to execute correctly, you need to make sure your system has the `Microsoft Visual C++ 2005 Service Pack` installed.
+This was standard in most old systems, but newer systems are no longer bundled with it. You can find it here:
+https://www.microsoft.com/en-us/download/details.aspx?id=26347
+
 # Download Link #
 * https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/master.zip
+
 
 # Helpful Commands #
 
