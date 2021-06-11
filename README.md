@@ -16,7 +16,7 @@ This was standard in most old systems, but newer systems are no longer bundled w
 https://www.microsoft.com/en-us/download/details.aspx?id=26347
 
 # Download Link #
-* https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/master.zip
+* https://github.com/CloneTrooper1019/Roblox-2007-Client/archive/main.zip
 
 
 # Helpful Commands #
